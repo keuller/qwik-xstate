@@ -1,7 +1,7 @@
 import { createMachine } from '@xstate/fsm';
-import type { WizardType, WizardEvent } from './types';
+import type { WizardState, WizardEvent } from './types';
 
-export const wizardMachine = createMachine<WizardType, WizardEvent, any>({
+export const wizardMachine = createMachine<WizardState, WizardEvent, any>({
     id: 'demo',
     initial: 'step1',
     context: {
