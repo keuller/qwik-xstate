@@ -14,18 +14,20 @@ export default component$(() => {
     currentState: string,
     wizard: NoSerialize<StateMachine.Service<WizardState, WizardEvent, any>>,
     data: WizardState
+    send: NoSerialize<(event: WizardEvent) => void>
   }>({
     currentState: 'step1',
     wizard: undefined,
+    send: noSerialize((event: WizardEvent): void => {}),
     data: { option: '', name: '', value:0, email: '', country: '', city: '' }
   });
 
   const doNext = $(() => {
-    state.wizard?.send({ type: 'NEXT' });
+    state.send?.({ type: 'NEXT' });
   });
 
   const doPrev = $(() => {
-    state.wizard?.send({ type: 'PREV' });
+    state.send?.({ type: 'PREV' });
   });
 
   const doSend = $(() => {
@@ -37,6 +39,7 @@ export default component$(() => {
     state.wizard?.subscribe((value) => {
       state.currentState = value.value;
       state.data = value.context;
+      state.send = noSerialize((event: WizardEvent) => state.wizard?.send(event))
     });
   });
 

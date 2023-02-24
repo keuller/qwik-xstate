@@ -18,14 +18,18 @@ export const wizardMachine = createMachine<WizardState, WizardEvent, any>({
         step1: {
             on: {
                 NEXT: { 
-                    target: 'step2'
+                    target: 'step2',
+                    actions: ['doStep2']
                 }
             }
         },
         step2: {
             on: {
                 PREV: { target: 'step1' },
-                NEXT: { target: 'step3' }
+                NEXT: { 
+                    target: 'step3',
+                    actions: ['doStep3']
+                }
             }
         },
         step3: {
@@ -33,5 +37,10 @@ export const wizardMachine = createMachine<WizardState, WizardEvent, any>({
                 PREV: { target: 'step2' }
             }
         }
+    }
+}, {
+    actions: {
+        doStep2: (ctx, event) => console.log('[doStep2] context:', ctx, 'event:', event),
+        doStep3: (ctx, event) => console.log('[doStep3] context:', ctx, 'event:', event)
     }
 });
