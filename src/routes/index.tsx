@@ -12,12 +12,12 @@ import StepTwo from '~/components/wizard/step-two';
 export default component$(() => {
   const state = useStore<{
     currentState: string,
-    wizard: NoSerialize<StateMachine.Service<WizardState, WizardEvent, any>>,
+    service: NoSerialize<StateMachine.Service<WizardState, WizardEvent, any>>,
+    send: NoSerialize<(event: WizardEvent) => void>,
     data: WizardState
-    send: NoSerialize<(event: WizardEvent) => void>
   }>({
-    currentState: 'step1',
-    wizard: undefined,
+    currentState: '',
+    service: undefined,
     send: noSerialize((event: WizardEvent): void => {}),
     data: { option: '', name: '', value:0, email: '', country: '', city: '' }
   });
@@ -35,11 +35,12 @@ export default component$(() => {
   });
 
   useBrowserVisibleTask$(() => {
-    state.wizard = noSerialize(interpret(wizardMachine).start());
-    state.wizard?.subscribe((value) => {
+    state.service = noSerialize(interpret(wizardMachine).start());
+    state.currentState = state.service?.state.value;
+    state.service?.subscribe((value) => {
       state.currentState = value.value;
       state.data = value.context;
-      state.send = noSerialize((event: WizardEvent) => state.wizard?.send(event))
+      state.send = noSerialize(state.service?.send)
     });
   });
 
